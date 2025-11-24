@@ -21,17 +21,15 @@ android {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
         val properties = Properties()
-
-        // 2. Localizamos el archivo
         val localPropertiesFile = project.rootProject.file("local.properties")
-
-        // 3. Si existe, lo cargamos (sin poner "java.io" antes)
         if (localPropertiesFile.exists()) {
             properties.load(FileInputStream(localPropertiesFile))
         }
+        val apiKey = properties.getProperty("MAPS_API_KEY") ?: ""
 
-        // 4. Inyectamos la variable
         manifestPlaceholders["MAPS_API_KEY"] = properties.getProperty("MAPS_API_KEY") ?: ""
+
+        buildConfigField("String", "MAPS_API_KEY", "\"$apiKey\"")
     }
 
     buildTypes {
@@ -52,6 +50,7 @@ android {
     }
     buildFeatures {
         compose = true
+        buildConfig = true
     }
 }
 
@@ -65,7 +64,6 @@ dependencies {
     implementation(libs.androidx.compose.ui.graphics)
     implementation(libs.androidx.compose.ui.tooling.preview)
     implementation(libs.androidx.compose.material3)
-    implementation(libs.androidx.room.compiler)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -82,6 +80,4 @@ dependencies {
 
     //implementation("com.google.android.libraries.places:places:3.5.0")
     implementation(libs.places)
-
-    implementation(libs.androidx.room.compiler)
 }
